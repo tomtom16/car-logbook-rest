@@ -9,7 +9,8 @@ CREATE TABLE VEHICLE (
          YEAR_OF_CONSTRUCTION           DATE,
          POWER                          SMALLINT,
          GASOLINE_TYPE                  VARCHAR(15),
-         PHOTO                          VARCHAR(256)
+         PHOTO                          VARCHAR(256),
+         PRIMARY_VEHICLE                BOOLEAN
 );
 
 CREATE TABLE LOGBOOK_ENTRY (

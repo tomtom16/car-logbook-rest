@@ -5,6 +5,97 @@ info:
 security:
   - ApiKeyAuth: [ ]
 paths:
+  /api/v1/vehicle:
+    get:
+      summary: Protected vehicle endpoint
+      tags:
+        - vehicle
+      operationId: getVehicles
+      security:
+        - ApiKeyAuth: [ ]
+        - UserServiceToken: [ ]
+      responses:
+        '200':
+          description: Successfully received logbook entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+        '400':
+          description: Bad Request (Invalid Query Parameters)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error (Failed to fetch logs)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/logbook:
+    get:
+      summary: Protected logbook endpoint
+      tags:
+        - logbook
+      operationId: getEntries
+      security:
+        - ApiKeyAuth: [ ]
+        - UserServiceToken: [ ]
+      parameters:
+        - in: query
+          name: vehicleId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: Successfully received logbook entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogbookEntry'
+        '400':
+          description: Bad Request (Invalid Query Parameters)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error (Failed to fetch logs)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /api/v1/ping:
     get:
       summary: Protected ping endpoint
@@ -47,6 +138,60 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
 components:
   schemas:
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        make:
+          type: string
+        model:
+          type: string
+        licensePlate:
+          type: string
+        yearOfConstruction:
+          type: string
+          format: date
+        power:
+          type: object
+          properties:
+            hp:
+              type: integer
+            kw:
+              type: integer
+        gasoline:
+          type: string
+          enum:
+            - GASOLINE
+            - DIESEL
+            - HYBRID
+            - ELECTRIC
+        photo:
+          type: string
+    LogbookEntry:
+      type: object
+      properties:
+        vehicle:
+          type: string
+          format: uuid
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        kmStart:
+          type: integer
+        kmEnd:
+          type: integer
+        trip:
+          type: number
+          format: double
+        route:
+          type: string
+        comment:
+          type: string
     PingResponse:
       type: object
       properties:

@@ -1,6 +1,6 @@
 package com.wiensquare.car.domain.entities;
 
-import com.wiensquare.car.domain.GasolineType;
+import com.wiensquare.car.rest.openapi.server.model.VehicleModel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,7 +26,10 @@ public class Vehicle extends BaseEntity {
     @Column(columnDefinition = "SMALLINT")
     private Integer power;
     @Enumerated(EnumType.STRING)
-    private GasolineType gasolineType;
+    private VehicleModel.GasolineEnum gasolineType;
     private String photo;
+
+    @Column(name = "primary_vehicle")
+    private boolean primary;
 
 }

@@ -12,4 +12,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, UUID> {
 
     List<Vehicle> findByUserId(UUID userId);
 
+    Vehicle findByUserIdAndPrimary(UUID userId, boolean primary);
+
 }
