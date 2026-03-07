@@ -9,4 +9,6 @@ public interface LogbookService {
 
     List<LogbookEntryModel> getLogbookEntries(UUID vehicleId);
 
+    LogbookEntryModel createLogbookEntry(LogbookEntryModel data);
+
 }

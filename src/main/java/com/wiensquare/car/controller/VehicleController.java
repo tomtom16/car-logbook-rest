@@ -28,4 +28,14 @@ public class VehicleController implements VehicleApi {
         }
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @Override
+    public ResponseEntity<VehicleModel> createVehicle(VehicleModel data) {
+        try {
+            return ResponseEntity.ok(vehicleService.createVehicle(data));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

@@ -15,4 +15,6 @@ public interface VehicleService {
 
     VehicleModel getPrimaryVehicle(UUID uid);
 
+    VehicleModel createVehicle(VehicleModel vehicle);
+
 }

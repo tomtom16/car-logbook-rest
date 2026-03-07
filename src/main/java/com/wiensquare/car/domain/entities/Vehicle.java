@@ -1,15 +1,13 @@
 package com.wiensquare.car.domain.entities;
 
 import com.wiensquare.car.rest.openapi.server.model.VehicleModel;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,5 +29,8 @@ public class Vehicle extends BaseEntity {
 
     @Column(name = "primary_vehicle")
     private boolean primary;
+
+    @OneToMany(mappedBy = "vehicle")
+    private Set<LogbookEntry> logbookEntries;
 
 }

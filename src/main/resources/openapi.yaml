@@ -47,7 +47,57 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/v1/logbook:
+    post:
+      summary: Create a vehicle
+      tags:
+        - vehicle
+      operationId: createVehicle
+      security:
+        - ApiKeyAuth: [ ]
+        - UserServiceToken: [ ]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+          "application/json; utf-8":
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+          "application/json; charset=utf-8":
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+      responses:
+        '200':
+          description: Successfully created vehicle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+        '400':
+          description: Bad Request (Invalid Query Parameters)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error (Failed to fetch logs)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/v1/vehicle/{vehicleId}/logbook:
     get:
       summary: Protected logbook endpoint
       tags:
@@ -57,7 +107,7 @@ paths:
         - ApiKeyAuth: [ ]
         - UserServiceToken: [ ]
       parameters:
-        - in: query
+        - in: path
           name: vehicleId
           schema:
             type: string
@@ -72,6 +122,63 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LogbookEntry'
+        '400':
+          description: Bad Request (Invalid Query Parameters)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server Error (Failed to fetch logs)
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      summary: Create Logbook Entry for Vehicle
+      tags:
+        - logbook
+      operationId: createEntry
+      security:
+        - ApiKeyAuth: [ ]
+        - UserServiceToken: [ ]
+      parameters:
+        - in: path
+          name: vehicleId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogbookEntry'
+          "application/json; utf-8":
+            schema:
+              $ref: '#/components/schemas/LogbookEntry'
+          "application/json; charset=utf-8":
+            schema:
+              $ref: '#/components/schemas/LogbookEntry'
+      responses:
+        '200':
+          description: Successfully received logbook entries
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogbookEntry'
         '400':
           description: Bad Request (Invalid Query Parameters)
           content:
@@ -169,6 +276,8 @@ components:
             - ELECTRIC
         photo:
           type: string
+        primary:
+          type: boolean
     LogbookEntry:
       type: object
       properties:

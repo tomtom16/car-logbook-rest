@@ -9,10 +9,12 @@ import com.wiensquare.car.service.UserService;
 import com.wiensquare.car.service.VehicleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -62,8 +64,15 @@ public class DefaultVehicleService implements VehicleService {
 
     @Override
     public VehicleModel getPrimaryVehicle(UUID uid) {
-        Vehicle primaryUserVehicle = vehicleRepository.findByUserIdAndPrimary(uid, true);
-        return mapVehicle(primaryUserVehicle);
+        Optional<Vehicle> primaryUserVehicle = vehicleRepository.findByUserIdAndPrimary(uid, true);
+        return primaryUserVehicle.map(this::mapVehicle).orElse(null);
+    }
+
+    @Override
+    public VehicleModel createVehicle(VehicleModel vehicle) {
+        Vehicle entity = mapToEntity(vehicle);
+        entity = vehicleRepository.save(entity);
+        return mapVehicle(entity);
     }
 
     private VehicleModel mapVehicle(Vehicle vehicle) {
@@ -76,6 +85,7 @@ public class DefaultVehicleService implements VehicleService {
         data.setPhoto(vehicle.getPhoto());
         data.setYearOfConstruction(vehicle.getYearOfConstruction());
         data.setGasoline(vehicle.getGasolineType());
+        data.setPrimary(vehicle.isPrimary());
 
         int kw = vehicle.getPower(); // kw
         int hp = BigDecimal.valueOf(kw).multiply(KW_HP_FACTOR).intValue();
@@ -85,5 +95,25 @@ public class DefaultVehicleService implements VehicleService {
         data.setPower(power);
 
         return data;
+    }
+
+    private Vehicle mapToEntity(VehicleModel data) {
+        Vehicle vehicle = new Vehicle();
+
+        User currentUser = userService.getCurrentUser();
+        vehicle.setUserId(currentUser.getUid());
+        vehicle.setMake(data.getMake());
+        vehicle.setModel(data.getModel());
+        vehicle.setLicensePlate(data.getLicensePlate());
+        vehicle.setGasolineType(data.getGasoline());
+        vehicle.setYearOfConstruction(data.getYearOfConstruction());
+        vehicle.setPrimary(BooleanUtils.toBoolean(data.getPrimary()));
+        vehicle.setPhoto(data.getPhoto());
+
+        if (data.getPower() != null) {
+            vehicle.setPower(data.getPower().getKw());
+        }
+
+        return vehicle;
     }
 }

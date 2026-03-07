@@ -1,6 +1,5 @@
 package com.wiensquare.car.domain.entities;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
@@ -23,10 +22,8 @@ public class LogbookEntry extends BaseEntity {
 
     private OffsetDateTime endTime;
 
-    @Column(columnDefinition = "SMALLINT")
     private Integer kmStart;
 
-    @Column(columnDefinition = "SMALLINT")
     private Integer kmEnd;
 
     private BigDecimal trip;
